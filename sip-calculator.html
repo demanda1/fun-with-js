@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator</title>
+</head>
+<script>
+    function calculateSip(){
+        const per_month_amount = document.getElementById("per-month-amount").value;
+        const mf_rate = document.getElementById("mf-rate").value;
+        const time_period = document.getElementById("time-period").value;
+        const invValue = per_month_amount * time_period ;
+        const calcRate = mf_rate/1200;
+        const x = ((Math.pow(1+calcRate, time_period*12) - 1) /calcRate).toFixed(4);
+        const estValue = per_month_amount * x * (1 + calcRate);
+        const totalValue = invValue + estValue;
+
+        let isIntervalRunning=false;
+
+         function changeValues(){
+            let invVal = document.getElementById("invested-amount").innerHTML;
+            let estRet = document.getElementById("est-returns").innerHTML;
+            let totVal = document.getElementById("total-value").innerHTML;
+
+            animateValue("invested-amount", 350, invVal, invValue);
+            animateValue("est-returns", 350, estRet, estValue);
+            animateValue("total-value", 350, totVal, totalValue);
+            
+        }
+
+         function animateValue(id, duration, start, end){
+            let range = Math.abs(end-start);
+                let obj = document.getElementById(id);
+                let startTime = new Date().getTime();
+                let endTime = startTime + duration;
+                let stepTime = Math.max(Math.floor(duration/range), 1);
+
+                let timer = setInterval(()=>{
+                    let now = new Date().getTime();
+                    let remainingTime = Math.max((endTime-now)/duration, 0);
+                    let value = Math.round(Math.abs(end - range*remainingTime));
+
+                    console.log(id)
+                    obj.innerHTML = value;
+                    if(value == end){
+                        console.log(id + " is done")
+                        clearInterval(timer);
+                    }
+                    resolve("done");
+                }, stepTime);
+            
+    }
+
+        changeValues();
+
+
+    }
+
+    
+</script>
+<body>
+    <input id="per-month-amount" placeholder="Monthly investment"></br>
+    <input id="mf-rate" placeholder="Expected return rate"> per annum</br>
+    <input id="time-period" placeholder="Time period"> years</br>
+    <button onclick="calculateSip()">calculate</button>
+    <div>
+        <b>Invested amount = </b><b id="invested-amount">0</b></br>
+        <b>Est. Returns = </b><b id ="est-returns">0</b></br>
+        <b>Total value = </b><b id="total-value">0</b></br>
+    </div>
+</body>
+</html>
